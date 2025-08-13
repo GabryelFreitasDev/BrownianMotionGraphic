@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="BrownianMotionGraphic.Views.MainPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BrownianMotionGraphic.ViewModels"
+             x:DataType="vm:MainPageViewModel"
+             Title="Simulação de Movimento Browniano">
+
+    <Grid ColumnDefinitions="320, *">
+        <ScrollView Grid.Column="0" BackgroundColor="{StaticResource Primary}">
+            <StackLayout Padding="20" Spacing="15">
+
+                <Label Text="Movimento Browniano" 
+                       FontSize="20" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center"
+                       TextColor="{StaticResource White}"/>
+
+                <Border BackgroundColor="{StaticResource White}" 
+                       Padding="15" 
+                       StrokeShape="RoundRectangle 10">
+                    <StackLayout Spacing="5">
+                        <Label Text="Status" FontAttributes="Bold" FontSize="16"/>
+                        <Label Text="{Binding StatusMessage}" 
+                               FontSize="12" 
+                               TextColor="{StaticResource Black}"
+                               HorizontalTextAlignment="Center" />
+
+                        <ActivityIndicator IsVisible="{Binding IsGenerating}" 
+                                           IsRunning="{Binding IsGenerating}" 
+                                           Color="{StaticResource Primary}" 
+                                           Margin="0,10,0,0" />
+                    </StackLayout>
+                </Border>
+
+                <Border BackgroundColor="White" Padding="15" StrokeShape="RoundRectangle 10">
+                    <StackLayout Spacing="12">
+                        <Label Text="Parâmetros Básicos" FontAttributes="Bold" FontSize="16" />
+
+                        <StackLayout>
+                            <Label Text="Preço Inicial" FontAttributes="Bold" />
+                            <Entry Text="{Binding InitialPrice}" 
+                                   Keyboard="Numeric" 
+                                   Placeholder="Ex: 100.0" />
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Volatilidade (%)" FontAttributes="Bold" />
+                            <Entry Text="{Binding Volatility}" 
+                                   Keyboard="Numeric" 
+                                   Placeholder="Ex: 20"/>
+                            <Slider Minimum="1" 
+                                    Maximum="200" 
+                                    Value="{Binding Volatility}" 
+                                    ThumbColor="{StaticResource Primary}" />
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Retorno Médio (%)" FontAttributes="Bold" />
+                            <Entry Text="{Binding Mean}" 
+                                   Keyboard="Numeric" 
+                                   Placeholder="Ex: 1.0" />
+                            <Slider Minimum="-50" 
+                                    Maximum="50" 
+                                    Value="{Binding Mean}" 
+                                    ThumbColor="{StaticResource Primary}" />
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Número de Dias" FontAttributes="Bold" />
+                            <Entry Text="{Binding NumberOfDays}" 
+                                   Keyboard="Numeric" 
+                                   Placeholder="Ex: 252" />
+                            <Stepper Minimum="10" 
+                                     Maximum="1000" 
+                                     Increment="10" 
+                                     Value="{Binding NumberOfDays}" />
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="Número de Simulações" FontAttributes="Bold" />
+                            <Entry Text="{Binding NumberOfSimulations}" 
+                                   Keyboard="Numeric" 
+                                   Placeholder="Ex: 1" />
+                            <Stepper Minimum="1" 
+                                     Maximum="10" 
+                                     Increment="1" 
+                                     Value="{Binding NumberOfSimulations}" />
+                        </StackLayout>
+                    </StackLayout>
+                </Border>
+
+                <StackLayout Spacing="10">
+                    <Button Text="Gerar Simulação" 
+                            Command="{Binding GenerateSimulationCommand}"
+                            IsEnabled="{Binding IsGenerating, Converter={StaticResource InvertedBoolConverter}}"
+                            BackgroundColor="{StaticResource Green}" 
+                            TextColor="White" 
+                            FontSize="16" />
+
+                    <Button Text="Resetar Parâmetros" 
+                            Command="{Binding DefaultParametersCommand}"
+                            BackgroundColor="{StaticResource Gray300}" 
+                            TextColor="{StaticResource White}" />
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+
+        <Border Grid.Column="1" 
+                Stroke="{StaticResource Gray300}" 
+                StrokeThickness="2" 
+                Margin="10"
+            >
+            <Grid>
+                <GraphicsView x:Name="ChartGraphicsView" 
+                              BackgroundColor="White"
+                              HorizontalOptions="Fill"
+                              VerticalOptions="Fill" />
+
+                <StackLayout IsVisible="{Binding CurrentResult, Converter={StaticResource IsNullConverter}}"
+                             HorizontalOptions="Center" 
+                             VerticalOptions="Center"
+                             Spacing="20">
+                    <Label Text="📈" 
+                           FontSize="64" 
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="Gráfico do Movimento Browniano" 
+                           FontSize="24" 
+                           FontAttributes="Bold" 
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="Configure os parâmetros e clique em 'Gerar Simulação' para visualizar o gráfico" 
+                           FontSize="16" 
+                           TextColor="{StaticResource Gray600}" 
+                           HorizontalTextAlignment="Center"
+                           Margin="20,0" />
+                </StackLayout>
+            </Grid>
+        </Border>
+
+    </Grid>
+
+</ContentPage>
